@@ -1,0 +1,3 @@
+dependencies:
+  - { role: commons/os-checker }
+  - { role: commons/pkg-install, become: yes, pkgs: ["containerd"] }
