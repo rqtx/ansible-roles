@@ -1,0 +1,6 @@
+- name: Install packages
+  ansible.builtin.include_role:
+    name: commons/pkg-install
+  become: yes
+  vars:
+    pkgs: ["git", "vim", "curl", "wget", "net-tools", "iputils-arping", "python-is-python3"]

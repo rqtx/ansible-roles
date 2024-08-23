@@ -1,0 +1,6 @@
+---
+# tasks file for server-init
+- import_tasks: hostname.yaml
+- import_tasks: createuser.yaml
+#- import_tasks: installpackages.yaml
+#- import_tasks: sshd.yaml

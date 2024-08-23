@@ -1,0 +1,23 @@
+- name: create the k8s users
+  become: yes
+  user: 
+    name: "{{ user }}"
+    append: yes
+    groups: "sudo"
+    state: present 
+    createhome: yes 
+    shell: /bin/bash
+
+- name: allow user to use sudo without needing a password
+  become: yes
+  lineinfile:
+    dest: /etc/sudoers
+    line: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
+    validate: 'visudo -cf %s'
+
+- name: set up authorized keys for user
+  become: yes
+  authorized_key: 
+    user: "{{ user }}"
+    key: "{{ lookup('file', '{{ pub_file }}') }}"
+  

@@ -1,0 +1,8 @@
+- name: Configure sshd to enable SSH Certificate login
+  ansible.builtin.include_role:
+    name: ansible-sshd
+  vars:
+    sshd:
+      # Disable password authentication, use SSH Certificates and configure authorized principals
+      PasswordAuthentication: false
+      TrustedUserCAKeys: "{{ trusted_user_ca_keys }}"
