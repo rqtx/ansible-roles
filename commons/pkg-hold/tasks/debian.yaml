@@ -1,0 +1,7 @@
+- name: Install packages (Debian/Ubuntu)
+  become: yes
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  with_items: "{{ pkgs }}"
+

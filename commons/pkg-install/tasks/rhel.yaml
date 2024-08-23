@@ -1,0 +1,7 @@
+- name: Install kubernetes packages (RHEL/CentOS)
+  become: yes
+  yum:
+    name: "{{ pkgs }}"
+    update_cache: yes
+    state: installed
+  with_items: "{{ pkgs }}"

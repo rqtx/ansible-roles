@@ -1,0 +1,7 @@
+- name: Install packages (Debian/Ubuntu)
+  become: yes
+  apt:
+    name: "{{ pkgs }}"
+    update_cache: yes
+    state: present
+  with_items: "{{ pkgs }}"
