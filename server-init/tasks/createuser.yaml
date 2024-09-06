@@ -1,4 +1,4 @@
-- name: create the k8s users
+- name: create the users
   become: yes
   user: 
     name: "{{ user }}"

@@ -1,0 +1,12 @@
+---
+# vars file for k8s/install
+firmware_cmdline: "net.ifnames=0 dwc_otg.lpm_enable=0 console=serial0,115200 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 console=tty1 root=LABEL=writable rootfstype=ext4 elevator=deadline rootwait fixrtc"
+k8s_user: blackbird
+k8s_group: blackbird
+k8s_gpgpath: /usr/share/keyrings/kubernetes.gpg
+k8s_version: v1.31
+k8s_url_apt_key: "https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/Release.key"
+k8s_repository: "https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/"
+helm_gpgpath: /usr/share/keyrings/helm.gpg
+helm_url_apt_key: "https://baltocdn.com/helm/signing.asc"
+helm_repository: "https://baltocdn.com/helm/stable/debian/"

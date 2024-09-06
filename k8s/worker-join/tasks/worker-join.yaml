@@ -1,0 +1,15 @@
+- name: "Kubeadm reset node cluster config"
+  become: yes
+  command: 
+    kubeadm reset --force
+  register: kubeadm_reset_node
+
+- name: "Kubeadm join"
+  become: yes
+  shell: 
+    kubeadm join --token={{ hostvars['K8S_TOKEN_HOLDER']['token'] }}
+    --discovery-token-ca-cert-hash sha256:{{ hostvars['K8S_TOKEN_HOLDER']['hash'] }}
+    {{cp_ip}}:{{K8S_API_SECURE_PORT}}
+
+  delegate_to: "{{ wk_ip }}"
+  delegate_facts: true

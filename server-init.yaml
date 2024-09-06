@@ -1,0 +1,6 @@
+- hosts: all
+  roles:
+    - role: server-init
+      trusted_user_ca_keys: "/mnt/storage_ssd/CA/root-ssh/user_ca.pub"
+      pub_file: /home/blackbird/.ssh/spitfire.pub
+      hostname: "{{ host }}"

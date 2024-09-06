@@ -1,11 +1,26 @@
 ---
 # tasks file for controlplane
-- name: Debian prepere
-  import_tasks: debian.yaml
-  when: ansible_os_family == "Debian"
 
-- name: Install containerd
-  import_tasks: containerd.yaml
+# Cilium will fully replace it kube-proxy
+# https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kubeproxy-free
+- name: Initialize Kubernetes master with kubeadm init.
+  become: yes
+  command:
+    kubeadm init --skip-phases=addon/kube-proxy
+  register: kubeadmin_init
 
-- name: Install k8s
-  import_tasks: k8s.yaml
+- name: Ensure .kube directory exists.
+  file:
+    path: ~/.kube
+    group: "{{ k8s_group }}"
+    state: directory
+
+#- name: Copy /etc/kubernetes/admin.conf to ~/.kube/config
+#  become: yes
+#  ansible.builtin.copy:
+#    remote_src: yes
+#    src:  /etc/kubernetes/admin.conf
+#    dest: "/home/{{ k8s_user }}/.kube/config"
+#    owner: "{{ k8s_user }}"
+#    group: "{{ k8s_group }}"
+#    mode: '0600'

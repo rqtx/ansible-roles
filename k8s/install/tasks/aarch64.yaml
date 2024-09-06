@@ -1,0 +1,28 @@
+- name: Get gateway IP
+  shell: |
+          ip route | grep default | cut -f3 -d" "
+  register: gateway_ip
+  when: ansible_facts['architecture'] == "aarch64"
+
+- name: Get gateway MAC
+  shell: |
+          arp {{ gateway_ip.stdout }} | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'
+  register: gateway_mac
+  when: ansible_facts['architecture'] == "aarch64"
+
+- name: Persistence ARP Across System Reboots
+  copy: 
+    content: |
+      #!/bin/bash
+
+      arp -s {{ gateway_ip.stdout }} {{ gateway_mac.stdout }}
+      exit 0
+    dest: /etc/rc.local
+    mode: u=rwx,g=rwx,o=r
+  when: ansible_facts['architecture'] == "aarch64"
+
+- name: Enable cgroup memory
+  copy: 
+    content: "{{ firmware_cmdline }}"
+    dest: /boot/firmware/cmdline.txt
+  when: ansible_facts['architecture'] == "aarch64"

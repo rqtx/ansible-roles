@@ -2,6 +2,3 @@
 # vars file for controlplane
 k8s_user: blackbird
 k8s_group: blackbird
-k8s_url_apt_key: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key"
-k8s_gpgpath: /usr/share/keyrings/kubernetes-apt-keyring.gpg
-k8s_repository: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/"

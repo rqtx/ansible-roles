@@ -1,0 +1,7 @@
+---
+# tasks file for k8s-worker-join
+- name: Get tokens
+  import_tasks: kubeadm-get-tokens.yaml
+
+- name: Join cluster
+  import_tasks: worker-join.yaml

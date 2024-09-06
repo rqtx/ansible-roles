@@ -1,6 +1,4 @@
 ---
 # vars file for server-init
-hostname: ""
-trusted_user_ca_keys: ""
 user: "blackbird"
 pub_file: "~/.ssh/spitfire.pub"

@@ -1,0 +1,10 @@
+[controlplane]
+192.168.0.100 host=soyuz
+192.168.0.200 host=cp01
+
+[workers]
+192.168.0.104  host=worker-01
+192.168.0.202  host=worker-02
+
+[workers:vars]
+k8s_controlplane_ip=192.168.0.100
