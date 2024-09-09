@@ -2,3 +2,5 @@
 # vars file for controlplane
 k8s_user: blackbird
 k8s_group: blackbird
+#k8s_ha_ip: "{{ undef(hint='HAproxy ip') }}"
+#k8s_cp_leader_ip: "{{ undef(hint='Cluster install leader ip') }}"

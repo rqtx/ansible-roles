@@ -1,0 +1,12 @@
+- name: "Kubeadm join"
+  become: yes
+  shell: 
+    kubeadm join \
+    --token={{ token }} \
+    --discovery-token-ca-cert-hash sha256:{{ hash }} \
+    --control-plane \
+    --certificate-key {{ cert }}
+    {{ cp_ip }}:{{K8S_API_SECURE_PORT}}
+
+  delegate_to: "{{ wk_ip }}"
+  delegate_facts: true

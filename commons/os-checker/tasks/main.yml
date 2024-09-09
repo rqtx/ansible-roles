@@ -39,3 +39,7 @@
   when: ansible_os_family == "Debian"
   set_fact:
     system_env_dir: "/etc/default"
+
+- name: Set fact ansible_os_family var to RedHat
+  set_fact:
+    ansible_os_ip: "{{ hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}"

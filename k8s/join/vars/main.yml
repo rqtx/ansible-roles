@@ -2,5 +2,6 @@
 # vars file for k8s-worker-join
 cp_ip: "{{ undef(hint='Control Plane IP') }}"
 wk_ip: "{{ undef(hint='Worker IP') }}"
+cp_join: false # join as controlplane
 K8S_API_SECURE_PORT: 6443
 

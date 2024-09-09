@@ -1,12 +1,14 @@
 # If you skip init-cluster it's necessary to create a new token 
 # kubeadm token create
-- name: "Cluster token"
+- name: "Cluster token create"
+  become: true
   shell: kubeadm token create
   register: K8S_TOKEN
   delegate_to: "{{ cp_ip }}"
   delegate_facts: true
 
 - name: "Cluster token"
+  become: true
   shell: kubeadm token list | cut -d ' ' -f1 | sed -n '2p'
   register: K8S_TOKEN
   delegate_to: "{{ cp_ip }}"
@@ -14,12 +16,24 @@
 
 - name: "CA Hash"
   shell: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
-  register: K8S_MASTER_CA_HASH
+  register: K8S_CA_HASH
   delegate_to: "{{ cp_ip }}"
   delegate_facts: true
 
-- name: "Add K8S Token and Hash to dummy host"
-  add_host:
-    name:   "K8S_TOKEN_HOLDER"
+- name: Add K8S Token and Hash to fact
+  set_fact:
     token:  "{{ K8S_TOKEN.stdout }}"
-    hash:   "{{ K8S_MASTER_CA_HASH.stdout }}" 
+    hash:   "{{ K8S_CA_HASH.stdout }}"
+
+- name: "Cluster Cert"
+  become: yes
+  shell: kubeadm init phase upload-certs --upload-certs | cut -d ' ' -f1 | sed -n '3p'
+  register: K8S_CERT
+  delegate_to: "{{ cp_ip }}"
+  delegate_facts: true
+  when: cp_join == true
+
+- name: Add K8S Cert to fact
+  set_fact:
+    cert: "{{ K8S_CERT.stdout }}"
+  when: cp_join == true

@@ -1,8 +1,9 @@
 ---
 # tasks file for worker
-- name: Hold k8s
+- name: Join cluster
   ansible.builtin.import_role:
-    name: k8s/worker-join
+    name: k8s/join
   vars:
-    cp_ip: "{{ k8s_controlplane_ip }}"
-    wk_ip: "{{ hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}"
+    cp_ip: "{{ k8s_cp_leader_ip }}"
+    wk_ip: "{{ ansible_os_ip }}"
+    lb_ip: "{{ k8s_ha_ip }}"

@@ -1,0 +1,18 @@
+---
+# tasks file for k8s-worker-join
+- name: Get tokens
+  import_tasks: get-tokens.yaml
+
+- name: "Kubeadm reset node cluster config"
+  become: yes
+  command: 
+    kubeadm reset --force
+  register: kubeadm_reset_node
+  
+- name: Join cluster as worker
+  import_tasks: worker-join.yaml
+  when: cp_join == false
+
+- name: Join cluster as controlplane
+  import_tasks: cp-join.yaml
+  when: cp_join == true

@@ -1,26 +1,58 @@
 ---
 # tasks file for controlplane
 
+- name: "Kubeadm reset node cluster config"
+  become: yes
+  command: 
+    kubeadm reset --force
+  register: kubeadm_reset_node
+  when: ansible_os_ip != k8s_cp_leader_ip
+
 # Cilium will fully replace it kube-proxy
 # https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kubeproxy-free
+#- name: Initialize Kubernetes master with kubeadm init.
+#  become: yes
+#  command:
+#    kubeadm init --skip-phases=addon/kube-proxy
+#  register: kubeadmin_init
+#  ignore_errors: true
+#  when: ansible_os_ip == k8s_cp_leader_ip
+
 - name: Initialize Kubernetes master with kubeadm init.
   become: yes
   command:
-    kubeadm init --skip-phases=addon/kube-proxy
+    kubeadm init --skip-phases=addon/kube-proxy \
+    --control-plane-endpoint="{{ k8s_ha_ip }}":6443 \
+    --upload-certs \
+    --apiserver-advertise-address={{ k8s_cp_leader_ip }}
   register: kubeadmin_init
+  ignore_errors: true
+  when: ansible_os_ip == k8s_cp_leader_ip
 
 - name: Ensure .kube directory exists.
   file:
     path: ~/.kube
     group: "{{ k8s_group }}"
     state: directory
+  when: ansible_os_ip == k8s_cp_leader_ip
 
-#- name: Copy /etc/kubernetes/admin.conf to ~/.kube/config
-#  become: yes
-#  ansible.builtin.copy:
-#    remote_src: yes
-#    src:  /etc/kubernetes/admin.conf
-#    dest: "/home/{{ k8s_user }}/.kube/config"
-#    owner: "{{ k8s_user }}"
-#    group: "{{ k8s_group }}"
-#    mode: '0600'
+- name: Copy /etc/kubernetes/admin.conf to ~/.kube/config
+  become: yes
+  ansible.builtin.copy:
+    remote_src: yes
+    src:  /etc/kubernetes/admin.conf
+    dest: "/home/{{ k8s_user }}/.kube/config"
+    owner: "{{ k8s_user }}"
+    group: "{{ k8s_group }}"
+    mode: '0600'
+  when: ansible_os_ip == k8s_cp_leader_ip
+
+- name: Join cluster
+  ansible.builtin.import_role:
+    name: k8s/join
+  vars:
+    cp_ip: "{{ k8s_cp_leader_ip }}"
+    wk_ip: "{{ ansible_os_ip }}"
+    lb_ip: "{{ k8s_ha_ip }}"
+    cp_join: true
+  when: ansible_os_ip != k8s_cp_leader_ip

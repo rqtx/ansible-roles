@@ -11,6 +11,7 @@
   when: ansible_facts['architecture'] == "aarch64"
 
 - name: Persistence ARP Across System Reboots
+  become: yes
   copy: 
     content: |
       #!/bin/bash
@@ -21,8 +22,8 @@
     mode: u=rwx,g=rwx,o=r
   when: ansible_facts['architecture'] == "aarch64"
 
-- name: Enable cgroup memory
-  copy: 
-    content: "{{ firmware_cmdline }}"
-    dest: /boot/firmware/cmdline.txt
-  when: ansible_facts['architecture'] == "aarch64"
+#- name: Enable cgroup memory
+#  copy: 
+#    content: "{{ firmware_cmdline }}"
+#    dest: /boot/firmware/cmdline.txt
+#  when: ansible_facts['architecture'] == "aarch64"
